@@ -12,27 +12,27 @@ client.on('message', message => {
   console.log("message");
   if(message.content.indexOf(config.prefix) === 0) {
     console.log("outerif");
-    if(command === "queue") {
+    if(cmd === "queue") {
       message.channel.send('queue');
       console.log("queue");
     }
 
-    if(command === "ping") {
+    if(cmd === "ping") {
       message.channel.send('ping');
       console.log("ping");
     }
     
-    if(command === "add") {
+    if(cmd === "add") {
       message.channel.send('add');
       console.log("add");
     }
     
-    if(command === "remove") {
+    if(cmd === "remove") {
       message.channel.send('remove');
       console.log("remove");
     }
     
-    if(command === "clear") {
+    if(cmd === "clear") {
       message.channel.send('clear');
       console.log("clear");
     }
