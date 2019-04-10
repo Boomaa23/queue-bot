@@ -8,35 +8,34 @@ client.on('ready', () => {
 
 client.on('message', message => {
   const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+  const opt = message.content.slice(config.prefix.length).trim().split("")
   const cmd = args.shift().toLowerCase();
-  console.log("message");
+  var users = new Array();
+  
   if(message.content.indexOf(config.prefix) === 0) {
-    console.log("outerif");
     if(cmd === "queue") {
-      message.channel.send('queue');
-      console.log("queue");
+      users = new Array();
+      users[0] = message.author;
+      message.channel.send(message);
     }
 
     if(cmd === "ping") {
-      message.channel.send('ping');
-      console.log("ping");
+      
+      message.channel.send(message);
     }
     
     if(cmd === "add") {
-      message.channel.send('add');
-      console.log("add");
+      message.channel.send(message);
     }
     
     if(cmd === "remove") {
-      message.channel.send('remove');
-      console.log("remove");
+      message.channel.send(message);
     }
     
     if(cmd === "clear") {
-      message.channel.send('clear');
-      console.log("clear");
+      message.channel.send(message);
     }
   }
 });
 
-client.login("MzA0NzkzNzY0Njg4Mjk3OTg0.XK1xiw.B5l9Ki5LLBlq5S0WYWQBS5IoHDM");
+client.login(config.token);
