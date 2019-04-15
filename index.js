@@ -53,6 +53,7 @@ client.on('message', message => {
       players = [];
       message.channel.send("Cleared player queue");
     }
+    return;
   }
 });
 
