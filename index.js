@@ -1,5 +1,6 @@
+require('dotenv').config()
 const Discord = require('discord.js');
-const config = require("./config.json");
+const prefix = "q!";
 const client = new Discord.Client();
 
 var players = [];
@@ -11,11 +12,11 @@ client.on('ready', () => {
 
 client.on('message', message => {
   if(message.author.bot) return;
-  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+  const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const cmd = args.shift().toLowerCase();
-  const opt = message.content.slice(config.prefix.length + cmd.length).trim().split(" ")
+  const opt = message.content.slice(prefix.length + cmd.length).trim().split(" ")
   
-  if(message.content.indexOf(config.prefix) === 0) {
+  if(message.content.indexOf(prefix) === 0) {
     if(cmd === "setgame") {
       game = opt[0];
       message.channel.send("Set game as " + game);
@@ -52,8 +53,7 @@ client.on('message', message => {
       players = [];
       message.channel.send("Cleared player queue");
     }
-    message.delete();
   }
 });
 
-client.login(config.token);
+client.login(process.env.BOT_TOKEN)
