@@ -2,30 +2,46 @@ const Discord = require('discord.js');
 const config = require("./config.json");
 const client = new Discord.Client();
 
+var players = [];
+var game;
+
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
 client.on('message', message => {
+  if(message.author.bot) return;
   const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-  const opt = message.content.slice(config.prefix.length).trim().split("")
   const cmd = args.shift().toLowerCase();
-  var users = new Array();
+  const opt = message.content.slice(config.prefix.length + cmd.length).trim().split(" ")
   
   if(message.content.indexOf(config.prefix) === 0) {
+    if(cmd === "setgame") {
+      game = opt[0];
+      message.channel.send("Set game as " + game);
+    }
+    
     if(cmd === "queue") {
-      users = new Array();
-      users[0] = message.author;
-      message.channel.send(message);
+      players[0] = message.author;
+      var playerList;
+      for(var i = 1;i < opt.length;i++) {
+        playerList += "<@" + opt[i] + "> ";
+        players[i] = opt[i];
+      }
+      message.channel.send("Queued players " + playersList)
     }
 
     if(cmd === "ping") {
-      
-      message.channel.send(message);
+      var pingList = "";
+      for(var i = 0;i < users.length;i++) {
+        pingList += "<@" + users[i] + "> ";
+      }
+      message.channel.send(pingList + "\n" + message.author + opt[0]);
     }
     
     if(cmd === "add") {
-      message.channel.send(message);
+      players[players.length] = opt[0];
+      message.channel.send("Added player <@" + opt[0] + ">");
     }
     
     if(cmd === "remove") {
@@ -33,8 +49,10 @@ client.on('message', message => {
     }
     
     if(cmd === "clear") {
-      message.channel.send(message);
+      players = [];
+      message.channel.send("Cleared player queue");
     }
+    message.delete();
   }
 });
 
