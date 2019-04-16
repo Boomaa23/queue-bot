@@ -20,7 +20,7 @@ help += "*Clear* - `q!clear <game>` - Clears and resets the queue\n\n";
 help += "*Help* - `q!help public|[self]` - Displays the command reference\n";
 
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}`);
+  console.log(`\x1b[32mLogged in as ${client.user.tag}`);
 });
 
 client.on('message', message => {
@@ -28,20 +28,20 @@ client.on('message', message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const cmd = args.shift().toLowerCase();
   const opt = message.content.slice(prefix.length + cmd.length).trim().split(" ");
-  if(opt.length === 1 && opt[0] === '') {
-    console.log("No options on command");
-    opt.shift();
-  }
   
   if(message.content.indexOf(prefix) === 0) {
-    console.log("Command with prefix recieved: " + message.content);
+    console.log("\x1b[32m[QueueBot] Command with prefix recieved: " + message.content);
+    if(opt.length === 1 && opt[0] === '') {
+      console.log("\x1b[33m[QueueBot] No options on command");
+      opt.shift();
+    }
     
     if(cmd === "help") {
       if(typeof opt[0] != 'undefined' && opt[0].trim() === "public") {
-        console.log("Printing out command reference to channel");
+        console.log("\x1b[32m[QueueBot] Printing out command reference to channel");
         message.channel.send(help);
       } else {
-        console.log("Printing out command reference to DMs");
+        console.log("\x1b[32m[QueueBot] Printing out command reference to DMs");
         message.author.send(help);
       }
       return;
@@ -67,9 +67,9 @@ client.on('message', message => {
         }
       }
       
-      console.log("Players on queue command from index " + min + " to " + max);
       if(opt.slice(min).length > 0 && min > 0 && opt.length >= 2) {
-        game = gameTemp;
+        console.log("\x1b[0m[QueueBot] Players on queue command from index " + min + " to " + max);
+        game = gameTemp.trim();
         players = [];
         for(var i = min;i < max;i++) {
           players[players.length] = opt[i];
@@ -79,56 +79,63 @@ client.on('message', message => {
         date = opt[max];
         time = opt[max + 1];
         init = true;
-        var out = "Added player" + multi + players.join(" ").trim() + " to play *" + game.trim() + "*";
+        var out = "Queued player" + multi + players.join(" ").trim() + " to play *" + game + "*";
         
         if(typeof time != 'undefined') {
-          console.log("Time defined - added to output");
+          console.log("\x1b[0m[QueueBot] Time defined - added to output");
           out += " at " + time;
         }
         if(typeof date != 'undefined') {
-          console.log("Date defined - added to output")
+          console.log("\x1b[0m[QueueBot] Date defined - added to output")
           out += " on " + date;
         }
-        console.log("Queue message sent to channel successfully");
+        console.log("\x1b[32m[QueueBot] Queue message sent to channel successfully");
         message.channel.send(out);
       } else {
-        console.log("Queue command has too few options after arguments");
+        console.log("\x1b[33m[QueueBot] Queue command has too few options after arguments");
         message.channel.send("Please run `q!help` or add more options: \n`" + queueCmdRef + "`");
+        return;
       }
     }
       
     if(init === true) {
-      console.log("Command running after queue initialization");
+      if(cmd != "queue" && cmd != "help") {
+        console.log("\x1b[0m[QueueBot] Command running after queue initialization");
+      }
+      
       if(cmd === "setgame") {
         if(opt.length > 0) {
           game = "";
           for(var i = 0;i < opt.length;i++) {
             game += opt[i] + " ";
           }
-          console.log("Game set to " + game.trim() + " successfully");
-          message.channel.send("Set game as " + game.trim());
+          game = game.trim();
+          console.log("\x1b[32m[QueueBot] Game set to " + game + " successfully");
+          message.channel.send("Set game as *" + game + "*");
         } else {
-          console.log("No game found in options to set");
+          console.log("\x1b[33m[QueueBot] No game found in options to set");
           message.channel.send("Please include a game to set");
+          return;
         }
       }
 
       if(cmd === "ping") {
         if(players.length >= 0) {
-          var out = "This is a reminder for " + players.join(" ") + " to play " + game.trim();
+          var out = "This is a reminder for " + players.join(" ") + " to play *" + game + "*";
           if(typeof time != 'undefined') {
-            console.log("Time defined - added to output");
+            console.log("\x1b[0m[QueueBot] Time defined - added to output");
             out += " at " + time;
           }
           if(typeof date != 'undefined') {
-            console.log("Date defined - added to output");
+            console.log("\x1b[0m[QueueBot] Date defined - added to output");
             out += " on " + date;
           }
-          console.log("Players in queue pinged successfully");
+          console.log("\x1b[32m[QueueBot] Players in queue pinged successfully");
           message.channel.send(out);
         } else {
-          console.log("No players in queue to ping");
+          console.log("\x1b[33m[QueueBot] No players in queue to ping");
           message.channel.send("There are no players in the queue");
+          return;
         }
       }
       
@@ -138,11 +145,12 @@ client.on('message', message => {
             players[players.length] = opt[i];
           }
           var multi = opt.length > 1 ? "s" : "";
-          console.log("Players " + opt.join(" ").trim() + "added to queue");
+          console.log("[QueueBot] Players " + opt.join(" ").trim() + "added to queue");
           message.channel.send("Added player" + multi + " " + opt.join(" ").trim() + " to play " + game);
         } else {
-          console.log("No players to add to queue in options");
+          console.log("\x1b[33m[QueueBot] No players to add to queue in options");
           message.channel.send("Please include a player to add to the queue");
+          return;
         }
       }
       
@@ -151,7 +159,7 @@ client.on('message', message => {
           for(var j = 0;j < opt.length;j++) {
             for(var i = 0;i < players.length;i++) {
               if(players[i] === opt[j]) {
-                console.log("Removed " + players[i].trim() + " at index " + i + " of " + players.length);
+                console.log("\x1b[32m[QueueBot] Removed " + players[i].trim() + " at index " + i + " of " + players.length);
                 message.channel.send("Removed " + players[i]);
                 players.splice(i, 1);
                 break;
@@ -159,8 +167,9 @@ client.on('message', message => {
             }
           }
         } else {
-          console.log("No players to remove from queue in options");
+          console.log("\x1b[33m[QueueBot] No players to remove from queue in options");
           message.channel.send("Please include a player to remove from the queue");
+          return;
         }
       }
       
@@ -168,18 +177,21 @@ client.on('message', message => {
         players = [];
         game = "";
         init = false;
-        console.log("Cleared player queue");
+        console.log("\x1b[32m[QueueBot] Cleared player queue");
         message.channel.send("Cleared player queue. Please run: \n`q!queue " + queueCmdRef + "`\nif you would like to make a new queue.");
       }
-    } else if(cmd === "queue"){
-      console.log("Queue not initialized");
-      message.channel.send("Queue has not been initialized. Please run: \n`q!queue " + queueCmdRef + "`\nbefore continuing.")
-    } else {
-      console.log("Invalid command passed...returning early with error");
+    } else if(cmd === "clear"  || cmd === "remove" || cmd === "add" || cmd === "setgame" || cmd === "ping"){
+      console.log("\x1b[31m[QueueBot] Queue not initialized");
+      message.channel.send("Queue has not been initialized. Please run: \n`q!queue " + queueCmdRef + "`\nbefore continuing.");
+      return;
+    }
+    
+    if(cmd !== "queue" && cmd !== "clear"  && cmd !== "remove" && cmd !== "add" && cmd !== "setgame" && cmd !== "ping") {
+      console.log("\x1b[31m[QueueBot] Invalid command passed...returning early with error");
       message.channel.send("Invalid command entered: `" + message.content + "`");
       return;
     }
-    console.log("Command finished without errors");
+    console.log("\x1b[32m[QueueBot] Command finished without errors");
     return;
   }
 });
